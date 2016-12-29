@@ -1,18 +1,21 @@
 # 2017 Projects
 
-## Plan to do 
+## Big Project
 - Personal AI
  - Investment
  - Smart house
  - Asset consulting 
- - Facebook AI hack cup
 
-## Keep going 
 
-- Kaggle
+## Keep Going Project
 - Udacity
 - Deep Learning Research // App // Blog 
 - DemoWebSite (Django-based)
 - (optional) React.js
 - VidParser ( Object Detection & )
+
+## Competition
+- Facebook Hack Cup
+- Kaggle 
+- etc ...
 
