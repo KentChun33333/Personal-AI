@@ -1,10 +1,15 @@
 # 2017 Projects
 
-## Big Project
-- Personal AI
- - Investment
- - Smart house
- - Asset consulting 
+## Personal AI Agent
+- Investment
+  - data collected 
+  - anas
+  - storage 
+  - action 
+- Smart house
+- Asset consulting 
+- Update Log
+- DevQset
 
 
 ## Keep Going Project
