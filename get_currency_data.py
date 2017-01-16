@@ -60,12 +60,13 @@ def filt_df(df, last_date):
     return df
 
 def save_pair(df, path):
-    ref = str(df[date_index][len(df)-1])
     if len(df)>0 : 
+        ref = str(list(df[date_index])[-1])
         with open(path,'w') as f:
             f.write(ref)
     # Append; an existing file is opened for reading and writing, and if the file does not exist it is created.
     df.to_hdf(saveH5_add, 'df', mode='a')
+    print ('[*] Updated the Currency Data')
 
 
 if __name__=='__main__':
@@ -74,6 +75,7 @@ if __name__=='__main__':
     df = filt_df(df, last_date)
     # update new data
     save_pair(df, last_date_file)
+
 
 # isolated external data source and internal data source 
 # if map fail => external data source change => trigger modification alert 
