@@ -3,7 +3,7 @@ import tensorflow as tf
 import keras
 
 #  parallel training models
-class CurrencyStrategy():
+class Strategy():
     def __init__(self):
         pass
 
@@ -118,3 +118,29 @@ class CurrencyStrategy():
 
         model.summary()
         return model
+
+
+class Agent():
+    def __init__():
+        pass
+
+    def buy():
+        pass
+
+    def hold():
+        pass
+
+    def sell():
+        pass
+
+    def trade_fee():
+        pass
+
+class MemoryTree():
+    pass
+
+
+
+
+
+
