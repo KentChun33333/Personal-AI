@@ -4,10 +4,12 @@ import tensorflow as tf
 import numpy as np
 
 
+address = 'currency_data/currency.h5'
+
 def gen_train_pair(address, length, batch_size):
     # read table 
     df = pd.read_hdf(address)
-    
+
     # slice out col-0: date , col-11: no data only '-'
     df = df.ix[:,1:10].astype('float')
     df = np.array(df)
@@ -32,7 +34,6 @@ def get_estimator():
     pass
 
 
-address = 'currency_data/currency.h5'
 
 
 
