@@ -2,7 +2,7 @@
 import pandas as pd 
 import tensorflow as tf 
 import numpy as np
-
+from strategy import CurrencyStrategy
 
 def gen_train_pair(address, length, batch_size):
     # read table 
@@ -32,8 +32,23 @@ def get_estimator():
     pass
 
 
-address = 'currency_data/currency.h5'
+if __name__ == '__main__':
+    address = 'currency_data/currency.h5'
+    length = 15
+    cols = 9
+    batch_size = 26
+    # try using different optimizers and different optimizer configs
+    A = CurrencyStrategy()
+    model = A.cnn_bilstim(length, cols)
+    model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 
+    print('Train...')
+    model.compile(loss='categorical_crossentropy', optimizer='adadelta')
+
+    model.fit_generator(gen_train_pair(address, length, batch_size), 
+    samples_per_epoch = 60000, nb_epoch = 2, verbose=2, 
+    show_accuracy=True, callbacks=[],
+    validation_data=None, class_weight=None, nb_worker=1)
 
 
 
