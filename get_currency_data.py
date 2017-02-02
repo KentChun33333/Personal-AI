@@ -13,6 +13,17 @@ from datetime import datetime
 last_date_file = 'currency_data/last_date.txt'
 date_index = u'\u65e5\u671f'
 saveH5_add = 'currency_data/currency.h5'
+COL = [u'\u65e5\u671f', u'\u7f8e\u5143\uff0f\u65b0\u53f0\u5e63', u'\u4eba\u6c11\u5e63\uff0f\u65b0\u53f0\u5e63', u'\u6b50\u5143\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u65e5\u5e63', u'\u82f1\u938a\uff0f\u7f8e\u5143', u'\u6fb3\u5e63\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u6e2f\u5e63', u'\u7f8e\u5143\uff0f\u4eba\u6c11\u5e63', u'\u7f8e\u5143\uff0f\u5357\u975e\u5e63', u'\u7d10\u5e63\uff0f\u7f8e\u5143']
+
+
+def rebase_from_csv(address, saveH5_add):
+    '''Download the CSV and rebase the h5'''
+    df = pd.read_csv(address)
+    df.columns = COL
+    df[date_index]= pd.to_datetime(df[date_index], format= '%Y/%m/%d')
+    df = df.convert_objects(convert_numeric=True)
+    df.to_hdf(saveH5_add, 'df', mode='w')
+
 
 
 def get_currency_table():
@@ -47,7 +58,7 @@ def get_currency_table():
 
 def validate_col(col):
     '''validate the col name before map external-name to internal-id'''
-    assert col==[u'\u65e5\u671f', u'\u7f8e\u5143\uff0f\u65b0\u53f0\u5e63', u'\u4eba\u6c11\u5e63\uff0f\u65b0\u53f0\u5e63', u'\u6b50\u5143\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u65e5\u5e63', u'\u82f1\u938a\uff0f\u7f8e\u5143', u'\u6fb3\u5e63\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u6e2f\u5e63', u'\u7f8e\u5143\uff0f\u4eba\u6c11\u5e63', u'\u7f8e\u5143\uff0f\u5357\u975e\u5e63', u'\u7d10\u5e63\uff0f\u7f8e\u5143']
+    assert col==COL
 
 def get_last_date(path):
     with open(path,'r') as f:
@@ -60,20 +71,36 @@ def filt_df(df, last_date):
     return df
 
 def save_pair(df, path):
-    ref = str(df[date_index][len(df)-1])
-    if len(df)>0 : 
-        with open(path,'w') as f:
-            f.write(ref)
-    # Append; an existing file is opened for reading and writing, and if the file does not exist it is created.
+    # Append; an existing file is opened for reading and writing, 
+    # and if the file does not exist it is created.
     df.to_hdf(saveH5_add, 'df', mode='a')
+    # ,format='t'
+    ref = str(list(df[date_index])[-1])
+    with open(path,'w') as f:
+        f.write(ref)
+    print ('[*] Updated the Currency Data')
 
+def updata_pair(df, path):
+    '''Append, to_hd5 have some bugs'''
+    # dtype error would stop the append
+    df = df.convert_objects(convert_numeric=True)
+    with pd.HDFStore(saveH5_add) as store:
+        store.append('df',df)
+    #store.close()
+
+    ref = str(list(df[date_index])[-1])
+    with open(path,'w') as f:
+        f.write(ref)
+    print ('[*] Updated the Currency Data')
 
 if __name__=='__main__':
     df = get_currency_table()
     last_date = get_last_date(last_date_file)
     df = filt_df(df, last_date)
     # update new data
-    save_pair(df, last_date_file)
+    if len(df)>0:
+        updata_pair(df, last_date_file)
+
 
 # isolated external data source and internal data source 
 # if map fail => external data source change => trigger modification alert 
