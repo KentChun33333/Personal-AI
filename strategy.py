@@ -1,4 +1,17 @@
 
+<<<<<<< HEAD
+import keras
+from keras.layers import Dense, Dropout, Embedding, LSTM, Input, Bidirectional, Convolution1D, MaxPooling1D
+from keras.layers.core import Activation, Flatten
+from keras.layers.normalization import BatchNormalization
+from keras.preprocessing import sequence
+from keras.models import Sequential
+
+#  parallel training models
+# (batch, sequence, cols)
+class CurrencyStrategy():
+    def __init__(self):
+=======
 import numpy as np
 import pandas as pd
 
@@ -18,9 +31,10 @@ class Strategy():
         self.time_length = time_length
         self.batch_size  = batch_size
         self.learning_rate = learning_rate
+>>>>>>> d6a49670d678815e3f224dc5153226bb006fa56d
         pass
 
-    def loss(self, truY_, preY_, batch_size, gamma=0.8):
+    def loss(self, truY, preY, batch_size, gamma=0.8):
         '''
         MSE-loss + gredient to have a favor 
         '''
@@ -30,6 +44,39 @@ class Strategy():
         loss = tf.reduce_sum(tf.pow(truY - preY,2))
         return loss
 
+<<<<<<< HEAD
+    def cnn_bilstim(self, length, cols):
+        model = Sequential()
+        model.add(Convolution1D(64, 1, border_mode='same', input_shape=(length, cols)))
+        model.add(BatchNormalization(mode=2))
+        model.add(Convolution1D(64, 3, border_mode='same'))
+        model.add(Convolution1D(64, 3, border_mode='same'))
+        # model.add(Embedding(max_features, 128, input_length=maxlen))
+        model.add(Convolution1D(192, 3, border_mode='same'))
+        model.add(MaxPooling1D(pool_length = 2, stride = 2, border_mode='same'))
+        model.add(Convolution1D(128, 1, border_mode='same'))
+        model.add(Convolution1D(256, 3, border_mode='same'))
+        model.add(Convolution1D(256, 3, border_mode='same'))
+        model.add(MaxPooling1D(pool_length=2,stride = 2,border_mode='same'))
+        model.add(Flatten())
+        model.add(Dense(500))
+        model.add(Bidirectional(LSTM(240)))
+        model.add(Dropout(0.5))
+        model.add(Dense(length * cols, activation='sigmoid'))
+        model.summary()
+        return model
+
+    def yolo_small(self):
+        S, B, C, W, H = self.S, self.B, self.C, self.W, self.H
+        model = Sequential()
+
+        model.add(Convolution2D(64, 7, 7, input_shape=(H,W,3), 
+            border_mode='same' , subsample=(2,2)))
+        model.add(LeakyReLU(alpha=0.1))
+        model.add(MaxPooling2D(pool_size=(2, 2),border_mode='same' , 
+            strides=(2,2)))
+
+=======
     def gen_train_pair(self, address):
         '''
         Data Source Address
@@ -62,6 +109,7 @@ class Strategy():
         n_hidden = 256
         n_timesteps = self.time_length
         nb_classes =  self.time_length * 9 
+>>>>>>> d6a49670d678815e3f224dc5153226bb006fa56d
 
         model = Sequential()
         model.add(Convolution1D(32, 2, border_mode='same', input_shape=(n_timesteps, 9)))
