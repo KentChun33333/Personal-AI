@@ -1,17 +1,5 @@
 
-<<<<<<< HEAD
-import keras
-from keras.layers import Dense, Dropout, Embedding, LSTM, Input, Bidirectional, Convolution1D, MaxPooling1D
-from keras.layers.core import Activation, Flatten
-from keras.layers.normalization import BatchNormalization
-from keras.preprocessing import sequence
-from keras.models import Sequential
 
-#  parallel training models
-# (batch, sequence, cols)
-class CurrencyStrategy():
-    def __init__(self):
-=======
 import numpy as np
 import pandas as pd
 
@@ -31,8 +19,6 @@ class Strategy():
         self.time_length = time_length
         self.batch_size  = batch_size
         self.learning_rate = learning_rate
->>>>>>> d6a49670d678815e3f224dc5153226bb006fa56d
-        pass
 
     def loss(self, truY, preY, batch_size, gamma=0.8):
         '''
@@ -44,7 +30,6 @@ class Strategy():
         loss = tf.reduce_sum(tf.pow(truY - preY,2))
         return loss
 
-<<<<<<< HEAD
     def cnn_bilstim(self, length, cols):
         model = Sequential()
         model.add(Convolution1D(64, 1, border_mode='same', input_shape=(length, cols)))
@@ -66,17 +51,6 @@ class Strategy():
         model.summary()
         return model
 
-    def yolo_small(self):
-        S, B, C, W, H = self.S, self.B, self.C, self.W, self.H
-        model = Sequential()
-
-        model.add(Convolution2D(64, 7, 7, input_shape=(H,W,3), 
-            border_mode='same' , subsample=(2,2)))
-        model.add(LeakyReLU(alpha=0.1))
-        model.add(MaxPooling2D(pool_size=(2, 2),border_mode='same' , 
-            strides=(2,2)))
-
-=======
     def gen_train_pair(self, address):
         '''
         Data Source Address
@@ -109,7 +83,6 @@ class Strategy():
         n_hidden = 256
         n_timesteps = self.time_length
         nb_classes =  self.time_length * 9 
->>>>>>> d6a49670d678815e3f224dc5153226bb006fa56d
 
         model = Sequential()
         model.add(Convolution1D(32, 2, border_mode='same', input_shape=(n_timesteps, 9)))
@@ -150,33 +123,35 @@ class Strategy():
         print model.summary()
         return model
 
-class Agent():
-    def __init__():
-        pass
-
-    def buy():
-        pass
-
-    def hold():
-        pass
-
-    def sell():
-        pass
-
-    def trade_fee():
-        pass
-
-class MemoryTree():
-    pass
 
 
 if __name__ == '__main__':
-    C = Strategy(15,10,1e-4)
+    C = Strategy(7,10,1e-5)
     model = C.build_model()
-    for i in range(10):
+    for i in range(100):
         model.fit_generator(C.gen_train_pair('currency_data/currency.h5'),
-                    samples_per_epoch=20, nb_epoch=5,verbose=2)
+                    samples_per_epoch=20, nb_epoch=3,verbose=2)
+    for i in range(100):
+        model.fit_generator(C.gen_train_pair('currency_data/currency.h5'),
+                    samples_per_epoch=20, nb_epoch=3,verbose=2)
+    for i in range(100):
+        model.fit_generator(C.gen_train_pair('currency_data/currency.h5'),
+                    samples_per_epoch=20, nb_epoch=3,verbose=2)
+    rmsprop = RMSprop(lr=1e-6)
+    model.compile(loss='categorical_crossentropy', optimizer=rmsprop)
+    for i in range(100):
+        model.fit_generator(C.gen_train_pair('currency_data/currency.h5'),
+                    samples_per_epoch=20, nb_epoch=3,verbose=2)
 
 
+"""
+def scheduler(epoch):
+    if epoch == 5:
+        model.lr.set_value(.02)
+    return model.lr.get_value()
 
+change_lr = LearningRateScheduler(scheduler)
 
+model.fit(x_embed, y, nb_epoch=1, batch_size = batch_size, show_accuracy=True,
+       callbacks=[chage_lr])
+"""
