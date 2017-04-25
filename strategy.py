@@ -6,7 +6,7 @@ import pandas as pd
  # import the necessary packages
 from keras.layers.convolutional import Convolution1D, MaxPooling1D
 from keras.layers.core import Activation, Flatten, Dropout, Dense, Permute, Reshape
-from keras.layers.recurrent import LSTM
+from keras.layers import LSTM, Bidirectional
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
 from keras.models import Sequential
@@ -22,11 +22,11 @@ class Strategy():
 
     def loss(self, truY, preY, batch_size, gamma=0.8):
         '''
-        MSE-loss + gredient to have a favor 
+        MSE-loss + gredient to have a favor
         '''
         # 1D tensor for 15 dim as length
         gredient_matrix = []
-        # 
+        #
         loss = tf.reduce_sum(tf.pow(truY - preY,2))
         return loss
 
@@ -57,20 +57,20 @@ class Strategy():
         '''
         length = self.time_length
         bs = self.batch_size
-        # read table 
-        df = pd.read_hdf(address)  
+        # read table
+        df = pd.read_hdf(address)
 
         # slice out col-0: date , col-11: no data only '-'
         df = df.ix[:,1:10].astype('float')
-        df = np.array(df)    
+        df = np.array(df)
 
         # numpy shuffle
-        np.random.shuffle(df)    
+        np.random.shuffle(df)
 
         # sliding-slice (full-length = x+y)
         data = []
         for nife in range(len(df)-(2*length)):
-            data.append(df[nife:(nife+(2*length))]) 
+            data.append(df[nife:(nife+(2*length))])
             # (batch, sequence, cols)
             if len(data)==bs:
                 data = np.array(data)
@@ -82,7 +82,7 @@ class Strategy():
     def build_model(self):
         n_hidden = 256
         n_timesteps = self.time_length
-        nb_classes =  self.time_length * 9 
+        nb_classes =  self.time_length * 9
 
         model = Sequential()
         model.add(Convolution1D(32, 2, border_mode='same', input_shape=(n_timesteps, 9)))
@@ -90,21 +90,21 @@ class Strategy():
         model.add(Convolution1D(32, 2, border_mode='same'))
 
         model.add(Activation('relu'))
-        
+
         model.add(LSTM(n_hidden))
         model.add(Dense(nb_classes))
         model.add(Activation('softmax'))
-        
+
         rmsprop = RMSprop(lr=self.learning_rate)
         model.compile(loss='categorical_crossentropy', optimizer=rmsprop)
-        
+
         print model.summary()
         return model
 
     def build_model_2(self):
         n_hidden = 256
         n_timesteps = self.time_length
-        nb_classes =  self.time_length * 9 
+        nb_classes =  self.time_length * 9
 
         model = Sequential()
         model.add(Convolution1D(32, 2, border_mode='same', input_shape=(n_timesteps, 9)))
@@ -112,14 +112,14 @@ class Strategy():
         model.add(Convolution1D(32, 2, border_mode='same'))
 
         model.add(Activation('relu'))
-        
+
         model.add(LSTM(n_hidden))
         model.add(Dense(nb_classes))
         model.add(Activation('softmax'))
-        
+
         rmsprop = RMSprop(lr=self.learning_rate)
         model.compile(loss='categorical_crossentropy', optimizer=rmsprop)
-        
+
         print model.summary()
         return model
 

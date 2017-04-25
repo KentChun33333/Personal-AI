@@ -1,13 +1,13 @@
 
-import pandas as pd 
-import tensorflow as tf 
+import pandas as pd
+import tensorflow as tf
 import numpy as np
-from strategy import CurrencyStrategy
+from strategy import Strategy
 
 address = 'currency_data/currency.h5'
 
 def gen_train_pair(address, length, batch_size):
-    # read table 
+    # read table
     df = pd.read_hdf(address)
 
     # slice out col-0: date , col-11: no data only '-'
@@ -34,36 +34,22 @@ def get_estimator():
     pass
 
 
-<<<<<<< HEAD
 if __name__ == '__main__':
     address = 'currency_data/currency.h5'
     length = 15
     cols = 9
     batch_size = 26
     # try using different optimizers and different optimizer configs
-    A = CurrencyStrategy()
+    A = Strategy(length ,batch_size, 0.001  )
     model = A.cnn_bilstim(length, cols)
     model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 
     print('Train...')
     model.compile(loss='categorical_crossentropy', optimizer='adadelta')
-=======
->>>>>>> d6a49670d678815e3f224dc5153226bb006fa56d
 
-    model.fit_generator(gen_train_pair(address, length, batch_size), 
-    samples_per_epoch = 60000, nb_epoch = 2, verbose=2, 
+    model.fit_generator(gen_train_pair(address, length, batch_size),
+    samples_per_epoch = 60000, nb_epoch = 2, verbose=2,
     show_accuracy=True, callbacks=[],
     validation_data=None, class_weight=None, nb_worker=1)
-
-
-
-
-
-
-
-
-
-
-
 
 
