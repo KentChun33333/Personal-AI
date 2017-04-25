@@ -25,7 +25,6 @@ def rebase_from_csv(address, saveH5_add):
     df.to_hdf(saveH5_add, 'df', mode='w')
 
 
-
 def get_currency_table():
     # address
     pageHTML = requests.get('http://www.taifex.com.tw/chinese/3/3_5.asp')
