@@ -33,13 +33,13 @@ def get_currency_table():
     # split table, get a list-obj
     pageHTML = pageHTML.split('<tr>')
     # remove <tag> in all items in list 
-    pageHTML = map(lambda x : re.sub('<.*?>', '', x), pageHTML)
+    pageHTML = list(map(lambda x : re.sub('<.*?>', '', x), pageHTML))
 
     # -----------------------
     col = pageHTML.pop(0) # colume , due to different struce 
     col = col.split('\n')      # remove <> and get list-obj
     col = col[2:13]            # slice, due to some null obj in list
-    col = map(lambda x:x.strip(), col) 
+    col = list(map(lambda x:x.strip(), col) )
     validate_col(col)
     
     # -----------------------
@@ -49,7 +49,7 @@ def get_currency_table():
         row = pageHTML[i]
         row = row.split('\n')
         row = row[1:len(col)+1]
-        row = map(lambda x: x.strip(), row)
+        row = list(map(lambda x: x.strip(), row))
         df.loc[i] = row
     # 2016/11/7
     df[date_index]= pd.to_datetime(df[date_index], format= '%Y/%m/%d')

@@ -6,22 +6,22 @@ import datetime
 STOCK_ref  =  'tw_stock_data/all_stock_201701.txt'
 OPTION_ref = 'tw_stock_data/all_stock_options_201702.txt'
 
-def getStock(id):
+def get_stock(id):
     stock = Share(str(id)+'.TW')
     today = datetime.date.today()
-    data = stock.get_historical('2016-12-01', str(today))
+    data = stock.get_historical('2017-01-01', str(today))
     return data
 
 def get_id(address):
-    with open(address, 'r') as f : 
+    with open(address, 'r') as f :
         for line in f:
             id = line.split(' ')[0]
-            try: 
+            try:
                 assert len(id)== 4 or 6
                 yield id
             except Exception as e :
-                print e 
-    
+                print (e)
+
 
 
 
@@ -32,6 +32,6 @@ if __name__=='__main__':
 
     # test :: pass
     for i in get_id(STOCK_ref):
-        print i
+        print (get_stock(i))
     for i in get_id(OPTION_ref):
-        print i
+        print (i)
