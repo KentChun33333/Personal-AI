@@ -1,7 +1,4 @@
-'''
-This script is from : https://github.com/Asoul/tsec
 
-'''
 import os
 import re
 import sys
@@ -36,7 +33,7 @@ class Crawler():
         cw.writerow(row)
         f.close()
 
-    def _get_tse_data(self, date_tuple, proxy=None):
+    def _get_tse_data(self, date_tuple):
         date_str = '{0}{1:02d}{2:02d}'.format(date_tuple[0], date_tuple[1], date_tuple[2])
         url = 'http://www.twse.com.tw/exchangeReport/MI_INDEX'
 
@@ -48,7 +45,7 @@ class Crawler():
         }
 
         # Get json data
-        page = requests.get(url, params=query_params, proxies=proxy)
+        page = requests.get(url, params=query_params)
 
         if not page.ok:
             logging.error("Can not get TSE data at {}".format(date_str))
@@ -75,11 +72,11 @@ class Crawler():
 
             self._record(data[0].strip(), row)
 
-    def _get_otc_data(self, date_tuple, proxy=None):
+    def _get_otc_data(self, date_tuple):
         date_str = '{0}/{1:02d}/{2:02d}'.format(date_tuple[0] - 1911, date_tuple[1], date_tuple[2])
         ttime = str(int(time.time()*100))
         url = 'http://www.tpex.org.tw/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php?l=zh-tw&d={}&_={}'.format(date_str, ttime)
-        page = requests.get(url, proxies=proxy)
+        page = requests.get(url)
 
         if not page.ok:
             logging.error("Can not get OTC data at {}".format(date_str))
@@ -104,16 +101,15 @@ class Crawler():
                     tr[3], # 漲跌價差
                     tr[10] # 成交筆數
                 ])
-                
                 self._record(tr[0], row)
 
 
-    def get_data(self, date_tuple, proxy=None):
+    def get_data(self, date_tuple):
         print('Crawling {}'.format(date_tuple))
-        self._get_tse_data(date_tuple, proxy=proxy)
-        self._get_otc_data(date_tuple, proxy=proxy)
+        self._get_tse_data(date_tuple)
+        self._get_otc_data(date_tuple)
 
-def main(proxy={}):
+def main():
     # Set logging
     if not os.path.isdir('log'):
         os.makedirs('log')
@@ -124,14 +120,12 @@ def main(proxy={}):
 
     # Get arguments
     parser = argparse.ArgumentParser(description='Crawl data at assigned day')
-    parser.add_argument('-d','--day', type=int, nargs='*',
+    parser.add_argument('day', type=int, nargs='*',
         help='assigned day (format: YYYY MM DD), default is today')
     parser.add_argument('-b', '--back', action='store_true',
         help='crawl back from assigned day until 2004/2/11')
-    parser.add_argument('-c', '--check', action='store_true', 
+    parser.add_argument('-c', '--check', action='store_true',
         help='crawl back 10 days for check data')
-
-    parser.add_argument('-p', '--proxy', type=str)
 
     args = parser.parse_args()
 
@@ -152,15 +146,14 @@ def main(proxy={}):
         # tse first day is 2004/02/11
 
         last_day = datetime(2004, 2, 11) if args.back else first_day - timedelta(10)
-        max_error = 15
+        max_error = 5
         error_times = 0
+
         while error_times < max_error and first_day >= last_day:
             try:
-                crawler.get_data((first_day.year, first_day.month, first_day.day), proxy=proxy)
+                crawler.get_data((first_day.year, first_day.month, first_day.day))
                 error_times = 0
-                print(first_day.year, first_day.month, first_day.day)
-            except Exception as e:
-                print(e)
+            except:
                 date_str = first_day.strftime('%Y/%m/%d')
                 logging.error('Crawl raise error {}'.format(date_str))
                 error_times += 1
@@ -171,15 +164,4 @@ def main(proxy={}):
         crawler.get_data((first_day.year, first_day.month, first_day.day))
 
 if __name__ == '__main__':
-    cols = [
-    'trading date' , 
-    'traded sum stockshard' , 
-    'traded sum price' , 
-    'open price' ,
-    'highest proce' , 
-    'lowest price' , 
-    'close price' ,
-    'price changed' , 
-    'trading numbers' , ]
-    
-    main(proxy={})
+    main()
