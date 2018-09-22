@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 from io import StringIO
 import time
+
 def monthly_report(year, month):
     
     # 假如是西元，轉成民國

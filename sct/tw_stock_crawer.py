@@ -115,9 +115,10 @@ class Crawler():
 
 def main(proxy={}):
     # Set logging
-    if not os.path.isdir('log'):
-        os.makedirs('log')
-    logging.basicConfig(filename='log/crawl-error.log',
+    if not os.path.isdir('stock_log'):
+        os.makedirs('stock_log')
+
+    logging.basicConfig(filename='stock_log/crawl-error.log',
         level=logging.ERROR,
         format='%(asctime)s\t[%(levelname)s]\t%(message)s',
         datefmt='%Y/%m/%d %H:%M:%S')
@@ -128,15 +129,15 @@ def main(proxy={}):
         help='assigned day (format: YYYY MM DD), default is today')
     parser.add_argument('-b', '--back', action='store_true',
         help='crawl back from assigned day until 2004/2/11')
-    parser.add_argument('-c', '--check', action='store_true', 
-        help='crawl back 10 days for check data')
+    parser.add_argument('-c', '--check', default=0, type=int, 
+        help='crawl back N days for check data')
 
     parser.add_argument('-p', '--proxy', type=str)
 
     args = parser.parse_args()
 
     # Day only accept 0 or 3 arguments
-    if len(args.day) == 0:
+    if args.day == None:
         first_day = datetime.today()
     elif len(args.day) == 3:
         first_day = datetime(args.day[0], args.day[1], args.day[2])
@@ -151,7 +152,7 @@ def main(proxy={}):
         # otc first day is 2007/04/20
         # tse first day is 2004/02/11
 
-        last_day = datetime(2004, 2, 11) if args.back else first_day - timedelta(10)
+        last_day = datetime(2004, 2, 11) if args.back else first_day - timedelta(args.check)
         max_error = 15
         error_times = 0
         while error_times < max_error and first_day >= last_day:
