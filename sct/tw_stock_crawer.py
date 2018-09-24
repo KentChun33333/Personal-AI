@@ -1,7 +1,4 @@
-'''
-This script is from : https://github.com/Asoul/tsec
 
-'''
 import os
 import re
 import sys

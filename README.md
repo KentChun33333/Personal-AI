@@ -1,27 +1,7 @@
-# 2017 Projects
-# 2018 Update
+# StockML
 
-## Personal AI Agent
-- Investment
-  - data collected 
-  - anas
-  - storage 
-  - action 
-- Smart house
-- Asset consulting 
-- Update Log
-- DevQset
-
-
-## Keep Going Project
-- Udacity
-- Deep Learning Research // App // Blog 
-- DemoWebSite (Django-based)
-- (optional) React.js
-- VidParser ( Object Detection & )
-
-## Competition
-- Facebook Hack Cup
-- Kaggle 
-- etc ...
-
+## data 
+## doc 
+## sct 
+## notebook
+## util_preprocess
