@@ -1,7 +1,2 @@
-# StockML
-
-## data 
-## doc 
-## sct 
-## notebook
-## util_preprocess
+# TradeWave
+Trading strategy consolidations, helping trade decision.
