@@ -126,7 +126,7 @@ def main(proxy={}):
         help='assigned day (format: YYYY MM DD), default is today')
     parser.add_argument('-b', '--back', action='store_true',
         help='crawl back from assigned day until 2004/2/11')
-    parser.add_argument('-c', '--check', default=0, type=int, 
+    parser.add_argument('-c', '--check', default=40, type=int, 
         help='crawl back N days for check data')
 
     parser.add_argument('-p', '--proxy', type=str)
