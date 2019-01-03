@@ -3,18 +3,15 @@ import re
 import pandas as pd
 import datetime 
 
-# -----------------------
-# external data source 
-# if there is anything changed, just check variables/ops in function
-# hard-code due to we are not able to control the external factors
-
-# -----------------------
-# Global_Variables
+# Script
+# Global Variable 
 last_date_file = 'currency_data/last_date.txt'
 date_index = u'\u65e5\u671f'
 saveH5_add = 'currency_data/currency.h5'
 COL = [u'\u65e5\u671f', u'\u7f8e\u5143\uff0f\u65b0\u53f0\u5e63', u'\u4eba\u6c11\u5e63\uff0f\u65b0\u53f0\u5e63', u'\u6b50\u5143\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u65e5\u5e63', u'\u82f1\u938a\uff0f\u7f8e\u5143', u'\u6fb3\u5e63\uff0f\u7f8e\u5143', u'\u7f8e\u5143\uff0f\u6e2f\u5e63', u'\u7f8e\u5143\uff0f\u4eba\u6c11\u5e63', u'\u7f8e\u5143\uff0f\u5357\u975e\u5e63', u'\u7d10\u5e63\uff0f\u7f8e\u5143']
 web_url = 'http://www.taifex.com.tw/cht/3/dailyFXRate'
+
+
 
 def rebase_from_csv(address, saveH5_add):
     '''Download the CSV and rebase the h5'''
@@ -26,6 +23,11 @@ def rebase_from_csv(address, saveH5_add):
 
 
 def get_currency_table(backtrack_days=180, end_date=None):
+    '''
+    Args: 
+       backtrack_days : how many days you want to craw, default 180
+       end_date       : default today 
+    '''
     if backtrack_days > 365:
         raise Exception('this api is limit for 1 year, ' 
                      'please specify end_date ex 2019/01/23, '
@@ -85,26 +87,16 @@ def filt_df(df, last_date):
 def save_pair(df, path):
     # Append; an existing file is opened for reading and writing, 
     # and if the file does not exist it is created.
-    df.to_hdf(saveH5_add, 'df', mode='a')
+    df.to_hdf(saveH5_add, 'df', format='table', append=True)
     # ,format='t'
     ref = str(list(df[date_index])[-1])
     with open(path,'w') as f:
         f.write(ref)
     print ('[*] Updated the Currency Data')
 
-def updata_pair(df, path):
-    '''Append, to_hd5 have some bugs'''
-    # dtype error would stop the append
-    df = df.convert_objects(convert_numeric=True)
-    df.to_hd5
-    #store.close()
-
-    ref = str(list(df[date_index])[-1])
-    with open(path,'w') as f:
-        f.write(ref)
-    print ('[*] Updated the Currency Data')
 
 if __name__=='__main__':
+
     df = get_currency_table()
     last_date = get_last_date(last_date_file)
     print('->', last_date)
@@ -113,15 +105,6 @@ if __name__=='__main__':
     if len(df)>0:
         save_pair(df, last_date_file)
 
-
-# isolated external data source and internal data source 
-# if map fail => external data source change => trigger modification alert 
-# 
-
-
-# we actually make no impact to the market 
-# so it is not nessary to use reinforcement learning, 
-# but we could still use the reinforcement-framework as an high-level summary
 
 
 
